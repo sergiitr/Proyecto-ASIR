@@ -14,7 +14,6 @@ function consultarDatos() {
             crearGrafica(data);
         }
     };
-
     xhr.open('GET', 'monitor.php', true);
     xhr.send();
 }
@@ -24,10 +23,8 @@ function crearGrafica(data) {
     var valores = [];
 
     // Inicializar los valores en 0 para cada día de la semana
-    for (var i = 0; i < 7; i++) {
+    for (var i = 0; i < 7; i++)
         valores[i] = 0;
-    }
-
     // Verificar si hay oferta y aplicar el descuento del 10%
     var diaOferta = null;
     data.forEach(function (item) {
@@ -38,16 +35,13 @@ function crearGrafica(data) {
             diaOferta = item.dia_semana;
         }
     });
-
     // Aplicar el descuento del 10% si hay oferta
     if (diaOferta !== null) {
         var indiceOferta = diasSemana.indexOf(diaOferta);
         valores[indiceOferta] *= 0.9; // Aplicar descuento del 10%
     }
-
     // Obtener el contexto del canvas
     var ctx = document.getElementById('barChart').getContext('2d');
-
     // Crear la gráfica de barras
     var barChart = new Chart(ctx, {
         type: 'bar',

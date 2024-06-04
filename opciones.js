@@ -9,11 +9,15 @@ function redirectPage(value) {
 function redirectPage2(value) {
     if (value === "pedidos")
         window.location.href = "./cliente.php";
+    else if (value === "recomendacion")
+        window.location.href = "./recomendacion.php";
+    else if (value === "mis_datos")
+        window.location.href = "./datosUsuario.php";
     else if (value === "cerrarSesion") {
         console.log("Cerrando sesión...");
         logoutLink.style.display = "block";
         cerrarSesion();
-    }  else if (value === "borrarUsuario") {
+    } else if (value === "borrarUsuario") {
         // Confirmar antes de borrar
         var confirmar = confirm("¿Está seguro de que desea borrar su usuario? Esta acción no se puede deshacer.");
         if (confirmar) 

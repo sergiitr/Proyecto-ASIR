@@ -7,23 +7,26 @@
         <title>Proyecto</title>
         <link rel="shortcut icon" href="./imagenes/logo.jpeg"/>
         <link rel="stylesheet" type="text/css" href="styles.css"/>
+        <script src="script.js"></script>
     </head>
     <body>
         <?php include 'header.php'; ?>
         <div class="item container-fluid mt-2">
             <?php
-                $db_hostname = "localhost";
-                $db_database = "tienda_videojuegos";
-                $db_username = "root";
-                $db_password = "";
-                $conexion = mysqli_connect($db_hostname, $db_username, $db_password, $db_database);
-                if (mysqli_connect_errno()) {
+                require_once "./verificacion.php";
+                require_once "./login.php";
+                $conexion = mysqli_connect($host, $user, $pass, $database);
+                if (mysqli_connect_errno())
                     die("Conexión fallida: " . mysqli_connect_error());
-                }
 
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $usuario = $_POST["usuarios"];
-                    $contrasena = $_POST["contrasenas"];
+                    if (esNombreUsuarioSospechoso($usuario)) {
+                        $_SESSION['error_registro'] = "El nombre de usuario contiene patrones sospechosos. Por favor, elige otro.";
+                        header("Location: crearUsuario.php");
+                        exit;
+                    }
+                    $contrasena = $_POST["contrasena"];
                     $tlfn = $_POST["tlfn"];
                     $direccion = $_POST["direccion"];
                     $nombre = $_POST["nombre"];
@@ -39,7 +42,6 @@
 
                 mysqli_close($conexion);
             ?>
-
             <a href="./crearUsuario.php"><button class="ejemplo">
                 <span class="span-mother">
                     <span>V</span>
@@ -64,14 +66,3 @@
         </footer>
     </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

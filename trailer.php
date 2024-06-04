@@ -1,6 +1,3 @@
-<?php 
-    session_start();
-?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -21,11 +18,10 @@
                     // Obtener el nombre del juego de la URL y limpiarlo para evitar posibles ataques de inyección de SQL
                     $nombreJuego = htmlspecialchars($_GET['juego']);
                     // Establecer la conexión a la base de datos
-                    require_once "login.php"; // Asegúrate de que este archivo contenga los datos de conexión
+                    require_once "login.php";
                     $conexion = mysqli_connect($host, $user, $pass, $database);
                     if (!$conexion) 
                         die("Error de conexión: " . mysqli_connect_error());
-
                     // Obtener el enlace del tráiler del juego desde la base de datos
                     $trailer = obtenerTrailerPorNombreJuego($nombreJuego, $conexion);
 
@@ -35,21 +31,21 @@
                         echo '<iframe class="yt" width="1024" src="', $trailer, '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
                     } else 
                         echo '<h1>No se encontró el tráiler para ' . $nombreJuego . '</h1>';
-                    // Cerrar la conexión a la base de datos
                     mysqli_close($conexion);
                 } else
                     echo '<h1>No se proporcionó el nombre del juego</h1>';
 
-                // Función para obtener el enlace del tráiler de un juego por su nombre desde la base de datos
+                /**
+                 * Función para obtener el enlace del tráiler de un juego dado su nombre.
+                 * @param string $nombreJuego Nombre del juego del cual se desea obtener el tráiler.
+                 * @param mysqli $conexion Conexión a la base de datos MySQL.
+                 * @return string|null Retorna el enlace del tráiler del juego si se encuentra, de lo contrario retorna null.
+                 */
                 function obtenerTrailerPorNombreJuego($nombreJuego, $conexion) {
-                    // Escapar el nombre del juego para evitar inyección de SQL
-                    $nombreJuegoEscapado = mysqli_real_escape_string($conexion, $nombreJuego);
-                    // Consulta para obtener el enlace del tráiler del juego
-                    $consulta = "SELECT trailer FROM juegos WHERE nombre = '$nombreJuegoEscapado'";
-                    // Ejecutar la consulta
-                    $resultado = mysqli_query($conexion, $consulta);
-                    // Verificar si se encontró el tráiler y devolverlo
-                    if($resultado && mysqli_num_rows($resultado) > 0) {
+                    $nombreJuegoEscapado = mysqli_real_escape_string($conexion, $nombreJuego);      // Escapar el nombre del juego para evitar inyección de SQL
+                    $consulta = "SELECT trailer FROM juegos WHERE nombre = '$nombreJuegoEscapado'"; // Consulta para obtener el enlace del tráiler del juego
+                    $resultado = mysqli_query($conexion, $consulta);                                // Ejecutar la consulta
+                    if($resultado && mysqli_num_rows($resultado) > 0) {                             // Verificar si se encontró el tráiler y devolverlo
                         $fila = mysqli_fetch_assoc($resultado);
                         return $fila['trailer'];
                     } else
@@ -57,6 +53,8 @@
                 }
             ?>
         </div>
-        <?php include 'footer.php'; ?>
+        <footer class="abajo">
+            <?php include 'footer.php'; ?>
+        </footer>
     </body>
 </html>

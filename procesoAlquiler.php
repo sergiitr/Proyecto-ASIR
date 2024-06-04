@@ -19,10 +19,7 @@
             <div class="row">
                 <?php
                     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                        $host = "localhost";
-                        $user = "root";
-                        $pass = "";
-                        $database = "tienda_videojuegos";
+                        require_once "./login.php";
                         $conexion = mysqli_connect($host, $user, $pass, $database);
 
                         if (!$conexion)

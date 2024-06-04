@@ -1,88 +1,121 @@
-<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <title>Proyecto</title>
-        <link rel="stylesheet" href="styles.css">
-        <link rel="shortcut icon" href="./imagenes/logo.jpeg"/>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <?php include 'header.php'; ?>
-        <div class="item container-fluid mt-4">
-            <div class="row">
-                <?php require_once "login.php";
-                    $conexion=mysqli_connect($host,$user,$pass,$database);
-                    mysqli_select_db($conexion,$database);
-                    if (!$conexion) 
-                        die("Error de conexión: " . mysqli_connect_error());
-                    
-                    // Crear la función si no existe
-                    $sqlCrearFuncion = " DROP FUNCTION IF EXISTS ContarVideojuegosPorPlataforma; ";
-                    if (!mysqli_query($conexion, $sqlCrearFuncion))
-                        echo "Error al eliminar la función si existe: " . mysqli_error($conexion);
-                    
-                    $sqlCrearFuncion = "
-                        CREATE FUNCTION ContarVideojuegosPorPlataforma(plataformaJuego VARCHAR(50)) 
-                        RETURNS INT
-                        DETERMINISTIC
-                        BEGIN
-                            DECLARE totalJuegos INT;
-                            SELECT COUNT(*) INTO totalJuegos FROM juegos WHERE plataforma = plataformaJuego;
-                            RETURN totalJuegos;
-                        END;
-                    ";
-                    if (!mysqli_query($conexion, $sqlCrearFuncion))
-                        echo "Error al crear la función: " . mysqli_error($conexion);
-                    else {
-                        // Llamada a la función almacenada
-                        $queryFuncion = "SELECT ContarVideojuegosPorPlataforma('pc') AS totalJuegos";
-                        $resultadoFuncion = mysqli_query($conexion, $queryFuncion);
-                    
-                        // Verifica si la consulta fue exitosa
-                        if ($resultadoFuncion) {
-                            $filaFuncion = mysqli_fetch_assoc($resultadoFuncion);
-                            $totalJuegosPlataforma = $filaFuncion['totalJuegos'];
-                            echo "<h3 class='letrasCantJuegos'>Hay $totalJuegosPlataforma juegos de pc</h3>";
-                        } else
-                            echo "Error al llamar a la función: " . mysqli_error($conexion);
-                    }
-                    
-                    // Configuración para la paginación
-                    $resultadosPorPagina = 6;
-                    $paginaActual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
-                    $inicioConsulta = ($paginaActual - 1) * $resultadosPorPagina;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Proyecto</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="./imagenes/logo.jpeg"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+<?php include 'header.php'; ?>
+<div class="item container-fluid mt-4">
+    <div class="row">
+        <div class="container-fluid mt-2">
+            <div class="text-end">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                    <input type="hidden" name="currency" value="<?php echo isset($_POST['currency']) && $_POST['currency'] === 'EUR' ? 'USD' : 'EUR'; ?>">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <?php echo isset($_POST['currency']) && $_POST['currency'] === 'USD' ? 'Precios en Dolares' : 'Precios en Euros'; ?>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <?php require_once "login.php";
+        // Definir la moneda base y la moneda objetivo
+        $baseCurrency = 'EUR'; // Cambia esto según tu moneda base
+        $targetCurrency = 'USD'; // Cambia esto según la moneda objetivo que desees
 
-                    // Consulta SQL con limitación para la paginación
-                    $consulta = "SELECT idJuego, nombre, stock, imagen, precio, plataforma FROM juegos WHERE plataforma='pc' LIMIT $inicioConsulta, $resultadosPorPagina";
-                    $resultado = mysqli_query($conexion, $consulta);
+        // Llamar a la API para obtener el tipo de cambio
+        $apiKey = '7e52c0191e05990920c561ec'; // Reemplaza 'TU_API_KEY' con tu clave de API de exchangerate-api
+        $exchangeRateApiUrl = "https://api.exchangerate-api.com/v4/latest/$baseCurrency";
+        $exchangeRateResponse = file_get_contents($exchangeRateApiUrl);
+        $exchangeRateData = json_decode($exchangeRateResponse, true);
 
-                    // Consulta SQL para obtener el número total de juegos
-                    $consultaTotal = "SELECT COUNT(*) AS total FROM juegos WHERE plataforma='pc'";
-                    $resultadoTotal = mysqli_query($conexion, $consultaTotal);
+        // Obtener el tipo de cambio entre la moneda base y la moneda objetivo
+        $exchangeRate = $exchangeRateData['rates'][$targetCurrency];
 
-                    // Verificar si la consulta fue exitosa
-                    if ($resultadoTotal) {
-                        $filaTotal = mysqli_fetch_assoc($resultadoTotal);
-                        $totalJuegos = $filaTotal['total'];
-                        // Calcular el número total de páginas
-                        $totalPaginas = ceil($totalJuegos / $resultadosPorPagina);
-                    } else
-                        echo "Error al obtener el número total de juegos: " . mysqli_error($conexion);
-                    // Código para mostrar los juegos obtenidos
-                    $contador = 1;
-                    while ($valores = mysqli_fetch_assoc($resultado)) {
-                        $nombre = $valores['nombre'];
-                        $stock = $valores['stock'];
-                        $precio = $valores['precio'];
-                        $plataforma = $valores['plataforma'];
-                        $id = 'card' . $contador;
-                        $imagen = $valores['imagen'];
-                        $idJuego = $valores['idJuego'];
-                        echo '  
+
+        $conexion=mysqli_connect($host,$user,$pass,$database);
+        mysqli_select_db($conexion,$database);
+        if (!$conexion) {
+            die("Error de conexión: " . mysqli_connect_error());
+        }
+
+        // Crear la función si no existe
+        $sqlCrearFuncion = "
+            DROP FUNCTION IF EXISTS ContarVideojuegosPorPlataforma;
+        ";
+        if (!mysqli_query($conexion, $sqlCrearFuncion)) {
+            echo "Error al eliminar la función si existe: " . mysqli_error($conexion);
+        }
+
+        $sqlCrearFuncion = "
+            CREATE FUNCTION ContarVideojuegosPorPlataforma(plataformaJuego VARCHAR(50)) 
+            RETURNS INT
+            DETERMINISTIC
+            BEGIN
+                DECLARE totalJuegos INT;
+                SELECT COUNT(*) INTO totalJuegos FROM juegos WHERE plataforma = plataformaJuego;
+                RETURN totalJuegos;
+            END;
+        ";
+        if (!mysqli_query($conexion, $sqlCrearFuncion))
+            echo "Error al crear la función: " . mysqli_error($conexion);
+        else {
+            // Llamada a la función almacenada
+            $queryFuncion = "SELECT ContarVideojuegosPorPlataforma('pc') AS totalJuegos";
+            $resultadoFuncion = mysqli_query($conexion, $queryFuncion);
+            // Verifica si la consulta fue exitosa
+            if ($resultadoFuncion) {
+                $filaFuncion = mysqli_fetch_assoc($resultadoFuncion);
+                $totalJuegosPlataforma = $filaFuncion['totalJuegos'];
+                echo "<h3 class='letrasCantJuegos'>Hay $totalJuegosPlataforma juegos de pc</h3>";
+            } else
+                echo "Error al llamar a la función: " . mysqli_error($conexion);
+        }
+
+        // Configuración para la paginación
+        $resultadosPorPagina = 6;
+        $paginaActual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+        $inicioConsulta = ($paginaActual - 1) * $resultadosPorPagina;
+
+        // Consulta SQL con limitación para la paginación
+        $consulta = "SELECT idJuego, nombre, stock, imagen, precio, plataforma FROM juegos WHERE plataforma='pc' LIMIT $inicioConsulta, $resultadosPorPagina";
+        $resultado = mysqli_query($conexion, $consulta);
+
+        // Consulta SQL para obtener el número total de juegos
+        $consultaTotal = "SELECT COUNT(*) AS total FROM juegos WHERE plataforma='pc'";
+        $resultadoTotal = mysqli_query($conexion, $consultaTotal);
+
+        // Verificar si la consulta fue exitosa
+        if ($resultadoTotal) {
+            $filaTotal = mysqli_fetch_assoc($resultadoTotal);
+            $totalJuegos = $filaTotal['total'];
+            // Calcular el número total de páginas
+            $totalPaginas = ceil($totalJuegos / $resultadosPorPagina);
+        } else
+            echo "Error al obtener el número total de juegos: " . mysqli_error($conexion);
+        // Código para mostrar los juegos obtenidos
+        $contador = 1;
+        while ($valores = mysqli_fetch_assoc($resultado)) {
+            $nombre = $valores['nombre'];
+            $stock = $valores['stock'];
+            $precio = $valores['precio'];
+            $plataforma = $valores['plataforma'];
+            $id = 'card' . $contador;
+            $imagen = $valores['imagen'];
+            $idJuego = $valores['idJuego'];
+            // Movemos la conversión del precio aquí
+            $precioConvertido = $precio * $exchangeRate;
+            // Convertimos el precio si se solicita en una moneda diferente
+            if (isset($_POST['currency']) && $_POST['currency'] === 'EUR') {
+                $precioConvertido = $precioConvertido / $exchangeRate;
+            }
+            echo '
                                 <div class="card2">
                                     <a href="trailer.php?juego=' . urlencode($nombre) . '" class="card-link">
                                     <div class="card" id="' . htmlspecialchars($id) . '">
@@ -91,8 +124,8 @@
                                     </div>
                                     </a>';
 
-                        if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true  && $_SESSION["administrador"] != 1) {
-                            echo '<div class="card3">
+            if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true  && $_SESSION["administrador"] != 1) {
+                echo '<div class="card3">
                                     <form action="carrito.php" method="post">
                                         <input type="hidden" name="iddelJuego" value="',$idJuego,'">
                                         <input type="hidden" name="plataforma" value="pc">
@@ -119,30 +152,30 @@
                                         </button>
                                     </form>
                                 </div>';
-                        } elseif (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true && $_SESSION["administrador"] == 1) {
-                            // Mostrar mensaje o botones inactivos para el administrador
-                            echo '<div class="card3">
+            } elseif (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true && $_SESSION["administrador"] == 1) {
+                // Mostrar mensaje o botones inactivos para el administrador
+                echo '<div class="card3">
                                     <p>Botones inactivos para admin</p>
                                 </div>';
-                        }
-                        echo'    </div>';
-                        echo '<style>
-                                #' . htmlspecialchars($id) . ':hover:after {
-                                    content: "Stock: ' . $stock . ' \A Precio: ' . $precio . '";
-                                    white-space: pre-wrap;
-                                }
-                            </style>';
-                        $contador++;
+            }
+            echo'    </div>';
+            echo '<style>
+                    #' . htmlspecialchars($id) . ':hover:after {
+                        content: "Stock: ' . $stock . ' \A Precio: ' . $precioConvertido . ' ' . (isset($_POST['currency']) && $_POST['currency'] === 'EUR' ? 'EUR' : 'USD') . '";
+                        white-space: pre-wrap;
                     }
+                    </style>';
+                $contador++;
+        }
 
-                    // Botones de navegación entre páginas
-                    echo '<div class="pagination">';
-                    for ($i = 1; $i <= $totalPaginas; $i++)
-                        echo '<a href="?pagina=' . $i . '"><button id="btnPagina' . $i . '" class="paginas">' . $i . '</button></a>';
-                    echo '</div>';
-                ?>
-            </div>
-        </div>
-        <?php include 'footer.php'; ?>
-    </body>
+        // Botones de navegación entre páginas
+        echo '<div class="pagination">';
+        for ($i = 1; $i <= $totalPaginas; $i++)
+            echo '<a href="?pagina=' . $i . '"><button id="btnPagina' . $i . '" class="paginas">' . $i . '</button></a>';
+        echo '</div>';
+        ?>
+    </div>
+</div>
+<?php include 'footer.php'; ?>
+</body>
 </html>

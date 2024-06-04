@@ -1,13 +1,10 @@
 <?php
-    session_start();
     $error_login = '';
-
     // Redirigir al usuario si ya ha iniciado sesión
     if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
-        header('Location: index.php'); // Puedes cambiar 'index.php' por la página a la que desees redirigir al usuario
+        header('Location: index.php');
         exit;
     }
-
     if (isset($_SESSION['error_login'])) {
         $error_login = $_SESSION['error_login'];
         unset($_SESSION['error_login']);
@@ -22,42 +19,69 @@
         <title>Proyecto</title>
         <link rel="shortcut icon" href="./imagenes/logo.jpeg"/>
         <link rel="stylesheet" type="text/css" href="styles.css"/>
+        <script src="script.js"></script>
     </head>
     <body>
         <?php include 'header.php'; ?>
-        <div class="item container-fluid mt-2">
+        <div class="item container mt-4">
             <form class="form" action="registro.php" method="post" enctype="multipart/form-data">
-                <p class="title">Registrate ya! </p>
+                <h1 class="title">Regístrate ya!</h1>
                 <div class="flex">
                     <label>
                         <input name='nombre' type="text" required class="input">
-                        <span>Nombre usuario</span>
+                        <span>Nombre de usuario</span>
                     </label>
                     <label>
+                        <input name='usuarios' type="text" required class="input">
+                        <span>Nick</span>
+                    </label>
+                </div>  
+                <div class="flex">
+                    <label>
+                        <input name='correo' type="email" required class="input">
+                        <span>Correo Electrónico</span>
+                    </label> 
+                    <label>
                         <input name='tlfn' type='number' required class="input">
-                        <span>Telefono</span>
+                        <span>Teléfono</span>
                     </label>
                     <label>
                         <input name='direccion' type='text' required class="input">
-                        <span>Direccion</span>
+                        <span>Dirección</span>
                     </label>
-                </div>  
-                        
-                <label>
-                    <input name='usuarios' type="text" required class="input">
-                    <span>Nick</span>
-                </label> 
-                    
-                <label>
-                    <input name='contrasenas' type='password' required class="input">
-                    <span>Contraseña</span>
-                </label>
-                <button class="submit">Crear</button>
-                <p class="signin">Ya tienes cuenta? <a href="./formInicioSesion.php">Inicia Sesion</a> </p>
+                </div> 
+                <div class="flex">
+                    <label>
+                        <input id="contrasena" name='contrasena' type='password' required class="input">
+                        <span>Contraseña</span>
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword()">Mostrar/Ocultar</button>
+                    </label>
+                    <label>
+                        <input id="confirmcontrasena" name='confirmar_contrasena' type='password' required class="input">
+                        <span>Confirmar Contraseña</span>
+                    </label>
+
+                </div>
+                <div id="password-strength-meter">
+                    <script src="./contrasena.js"></script>
+                </div>
+                <button id="submitButton"class="submit">Crear</button>
+                <p class="signin">¿Ya tienes cuenta? <a href="./formInicioSesion.php">Inicia Sesión</a></p>
             </form>
         </div>
-        <footer class="abajo">
-            <?php include 'footer.php'; ?>
-        </footer>
+        <script>
+            function togglePassword() {
+                var passwordField = document.getElementById("contrasena");
+                var confirmPasswordField = document.getElementById("confirmcontrasena");
+                if (passwordField.type === "password") {
+                    passwordField.type = "text";
+                    confirmPasswordField.type = "text";
+                } else {
+                    passwordField.type = "password";
+                    confirmPasswordField.type = "password";
+                }
+            }
+        </script>
+        <?php include 'footer.php'; ?>
     </body>
 </html>

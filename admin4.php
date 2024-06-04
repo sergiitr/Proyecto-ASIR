@@ -1,12 +1,5 @@
-<?php 
-    session_start();
-    if (!isset($_SESSION["usuario"]) || $_SESSION["administrador"] !== 1) {
-        header('Location: index.php');
-        exit;
-    }
-?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,20 +9,23 @@
         <link rel="shortcut icon" href="./imagenes/logo.jpeg"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="script.js"></script>
     </head>
     <body>
         <?php include 'header.php'; ?>
+        <?php 
+            if (!isset($_SESSION["usuario"]) || $_SESSION["administrador"] !== 1) {
+                header('Location: index.php');
+                exit;
+            }
+        ?>
         <?php
             require_once "login.php";
-
             // Establecer la conexión a la base de datos
             $conexion = mysqli_connect($host, $user, $pass, $database);
-
             // Verificar la conexión
-            if (mysqli_connect_errno()) {
+            if (mysqli_connect_errno())
                 die("Conexión fallida: " . mysqli_connect_error());
-            }
-
             // Crear el procedimiento almacenado
             $sql = "DROP PROCEDURE IF EXISTS CopiaSeguridad;
                     CREATE PROCEDURE CopiaSeguridad()
@@ -48,18 +44,15 @@
                         CREATE TABLE usuarios_bk LIKE usuarios;
                         INSERT INTO usuarios_bk SELECT * FROM usuarios;
                     END";
-
             // Si se ha pulsado el botón
             if (isset($_POST['backup_button'])) {
                 // Llamar al procedimiento almacenado
                 $sql2 = "CALL CopiaSeguridad()";
-
                 if (mysqli_query($conexion, $sql2))
                     echo "Copia de seguridad creada exitosamente.";
                 else
                     echo "Error al crear copia de seguridad: " . mysqli_error($conexion);
             }
-
             // Cerrar la conexión a la base de datos
             mysqli_close($conexion);
         ?>

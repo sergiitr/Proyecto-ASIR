@@ -20,40 +20,58 @@
         <script>
             const chatBox = document.getElementById("chat-box");
             const userInput = document.getElementById("user-input");
-
+            
+            /**
+             * Función para reproducir el texto por voz
+             */
+            function speakText(text) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                speechSynthesis.speak(utterance);
+            }
+            
+            /**
+             * Función para enviar el mensaje
+             */
             async function sendMessage() {
                 const userMessage = userInput.value;
                 if (userMessage.trim() !== "") {
                     appendMessage("Usuario", userMessage);
                     userInput.value = "";
-
                     // Manejar saludos y despedidas
                     if (isGreeting(userMessage)) {
                         appendMessage("IA", "¡Hola! ¿En qué puedo ayudarte?");
+                        speakText("¡Hola! ¿En qué puedo ayudarte?");
                         return;
                     } else if (isGoodbye(userMessage)) {
                         appendMessage("IA", "¡Hasta luego! ¡Que tengas un buen día!");
+                        speakText("¡Hasta luego! ¡Que tengas un buen día!");
                         return;
                     }
-
                     // Manejar preguntas sobre videojuegos
                     const gameName = userMessage; // No es necesario extraer el nombre del juego
                     if (gameName) {
                         const gameAvailabilityResponse = await checkGameAvailability(gameName);
                         appendMessage("IA", gameAvailabilityResponse);
+                        speakText(gameAvailabilityResponse);
                     } else {
                         // Si no es una pregunta sobre videojuegos, usar la IA para obtener respuesta
                         const aiResponse = await getAIResponse(userMessage);
                         appendMessage("IA", aiResponse);
+                        speakText(aiResponse);
                     }
                 }
             }
-
+            
+            /**
+             *  Funcion para recibir la respuesta de la IA
+             */ 
             async function getAIResponse(userMessage) {
-                // Simular una respuesta de la IA
-                return "Lo siento, no puedo determinar la disponibilidad del juego en este momento.";
+                return "Lo siento, no puedo determinar la disponibilidad del juego en este momento.";   // Simular una respuesta de la IA
             }
-
+            
+            /**
+             *  Funcion para comprobar si está el juego en la base de datos
+             */ 
             async function checkGameAvailability(gameName) {
                 try {
                     const response = await fetch("check_game_availability.php?gameName=" + encodeURIComponent(gameName));
@@ -64,19 +82,26 @@
                     return "Lo siento, ha ocurrido un error al verificar la disponibilidad del juego.";
                 }
             }
-
+            
+            
             function appendMessage(sender, message) {
                 const messageElement = document.createElement("p");
                 messageElement.textContent = `${sender}: ${message}`;
                 chatBox.appendChild(messageElement);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
-
+            
+            /**
+             *  Funcion para mandar saludo
+             */ 
             function isGreeting(message) {
                 const greetings = ["hola", "hello", "hi", "hey"];
                 return greetings.includes(message.toLowerCase());
             }
-
+            
+            /**
+             *  Funcion para mandar despedida
+             */ 
             function isGoodbye(message) {
                 const goodbyes = ["adiós","adios", "bye", "hasta luego"];
                 if (goodbyes.includes(message.toLowerCase())) {
@@ -85,9 +110,11 @@
                 }
                 return false;
             }
-
+            
+            /**
+             * Vacía el contenido del div que contiene la conversación
+             */
             function clearChat() {
-                // Vacía el contenido del div que contiene la conversación
                 chatBox.innerHTML = "";
             }
         </script>

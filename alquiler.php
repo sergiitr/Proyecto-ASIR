@@ -1,10 +1,3 @@
-<?php 
-    session_start();
-    if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"] == "admin") {
-        header('Location: index.php');
-        exit;
-    }
-?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -16,37 +9,35 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <link rel="stylesheet" href="styles.css">
+        <script src="script.js"></script>
     </head>
     <body>
         <?php include 'header.php'; ?>
-        <div class="item container-fluid mt-4">
+        <?php 
+            if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"] == "admin") {
+                header('Location: index.php');
+                exit;
+            }
+        ?>
+        <div class="item container mt-4">
             <div class="row">
                 <h1>Carrito de Alquiler</h1>
                 <h3>Solo se podra alquilar un juego en cada compra</h3>
-                
                 <?php
                     $hoy = date("Y-m-d");
                     $nueva_fecha = strtotime('+15 days', strtotime($hoy));
                     $nueva_fechaStr = date("Y-m-d", $nueva_fecha);
-
                     if (!isset($_SESSION['alquiler']))
                         $_SESSION['alquiler'] = [];
-
                     $id_Usuario = isset($_SESSION["usuario"]) ? $_SESSION["usuario"] : "UsuarioDesconocido";
-
                     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['iddelJuego'], $_POST['plataforma'])) {
-                        $host = "localhost";
-                        $user = "root";
-                        $pass = "";
-                        $database = "tienda_videojuegos";
+                        require_once "./login.php";
                         $conexion = mysqli_connect($host, $user, $pass, $database);
                         if (!$conexion)
                             die("Error de conexión a la base de datos: " . mysqli_connect_error());
-
                         $nombreJuego = mysqli_real_escape_string($conexion, $_POST['id']);
                         $query = "SELECT precio FROM juegos WHERE nombre = '$nombreJuego'";
                         $resultadoAlq = mysqli_query($conexion, $query);
-
                         if ($resultadoAlq && $filaAlq = mysqli_fetch_assoc($resultadoAlq)) {
                             $precio = $filaAlq['precio'];
                             mysqli_free_result($resultadoAlq);
@@ -120,10 +111,8 @@
                 <script>
                     function validarFecha() {
                         var inputFecha = document.getElementById('expiry').value;
-                        
                         // Verificar que la entrada tenga el formato MM/YY usando una expresión regular
                         var formatoValido = /^\d{2}\/\d{2}$/;
-                        
                         if (!formatoValido.test(inputFecha)) {
                             alert('Por favor, introduce la fecha en formato MM/YY.');
                             return false;
@@ -133,12 +122,10 @@
                         var partesFecha = inputFecha.split('/');
                         var mes = parseInt(partesFecha[0], 10); // Convertir a número base 10
                         var año = parseInt(partesFecha[1], 10);
-
                         // Obtener el mes y el año actuales
                         var fechaActual = new Date();
                         var mesActual = fechaActual.getMonth() + 1; // getMonth() devuelve valores de 0 a 11, por lo que se agrega 1
                         var añoActual = fechaActual.getFullYear() % 100; // Solo obtener los dos últimos dígitos del año
-
                         // Validar que el año sea igual o mayor al actual, y que el mes esté en el rango válido
                         if (año < añoActual || (año === añoActual && mes < mesActual)){
                             alert('La fecha de la tarjeta no es válida. Debe ser igual o superior al mes y año actuales.');

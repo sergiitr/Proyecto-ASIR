@@ -4,6 +4,273 @@
 @import url('https://fonts.googleapis.com/css?family=Exo+2');
 @import url('https://fonts.googleapis.com/css?family=Indie+Flower');
 @import url('https://fonts.googleapis.com/css?family=Amatic+SC');
+@import url('https://fonts.googleapis.com/css?family=Permanent+Marker');
+
+
+#game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+canvas {
+  background-color: #000;
+  border: 2px solid #333;
+}
+
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 20px);
+  grid-template-rows: repeat(3, 20px);
+  gap: 5px;
+  margin: 20px auto;
+}
+
+/* --------OTHELLO------ */
+.board2 {
+  display: grid;
+  grid-template-columns: repeat(8, 55px);
+  grid-template-rows: repeat(8, 55px);
+}
+
+.cell2 {
+  width: 50px;
+  height: 50px;
+  background-color: green;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.cell2.black {
+    background-color: black;
+    color: white;
+}
+
+.cell2.white {
+    background-color: white;
+    color: black;
+}
+
+/* --------FIN OTHELLO------ */
+
+.player-pieces-list {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.piece {
+    margin-right: 10px; /* Espacio entre las fichas */
+}
+
+
+#tablaSecciones {
+    display: block;
+    width: 100%;
+    text-align:center;
+}
+.textInicio {
+    font-size: 45px;
+    font-family: "Permanent Marker"; 
+}
+.textInicio2 {
+   font-family: "Permanent Marker";
+   font-size: 20px;
+}
+.botonesIdiomas {
+    display: flex;
+    justify-content: space-around;
+}
+.modal-body, .modal-header, .modal-footer, .botones-idiomas,.modal-dialog,.modal-content{
+    background-color:black;
+    color:white;
+}
+.texto-idioma {
+    color:white;
+}
+
+.resenas {
+    background-color: green;
+    display: flex;
+    color: linen;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.enlacesFooter {
+    color:white;
+    font-family: "Protest Riot";
+}
+
+.enlacesFooter:hover {
+    color:black;
+    font-family: "Protest Riot";
+}
+
+.cond_contra {
+    color: black;
+    background-color: white;
+    position: relative;
+    display: block;
+}
+/* Estilo general del post */
+.post {
+    background-color: #f9f9f9; /* Fondo gris claro */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 20px; /* Espaciado interno */
+    margin-bottom: 20px; /* Espacio entre posts */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* Estilo del título del post */
+.post h2 {
+    background-color: #333; /* Fondo negro para resaltar */
+    color: #fff; /* Texto blanco */
+    padding: 10px; /* Espaciado interno */
+    border-top-left-radius: 10px; /* Bordes redondeados arriba a la izquierda */
+    border-top-right-radius: 10px; /* Bordes redondeados arriba a la derecha */
+    margin-top: 0; /* Eliminar margen superior para evitar espacio adicional */
+}
+
+.post h4 {
+    background-color: #333; /* Fondo negro para resaltar */
+    color: #fff; /* Texto blanco */
+    padding: 10px; /* Espaciado interno */
+    border-top-left-radius: 10px; /* Bordes redondeados arriba a la izquierda */
+    border-top-right-radius: 10px; /* Bordes redondeados arriba a la derecha */
+    margin-top: 0; /* Eliminar margen superior para evitar espacio adicional */
+}
+
+/* Estilo del texto dentro del post */
+.post p {
+    color: #444; /* Color de texto oscuro */
+    line-height: 1.6; /* Espaciado entre líneas */
+    margin: 10px 0; /* Margen superior e inferior para separar párrafos */
+}
+
+#divJuego{
+	text-align:center;
+}
+
+svg rect{
+	fill: brown;
+	stroke:black;
+	stroke-width:3;
+}
+
+svg circle{
+	fill: white;
+	stroke: black;
+	stroke-width: 3;
+}
+
+svg polygon{
+	fill: white;
+	stroke: black;
+	stroke-width: 2;
+}
+
+svg polygon:hover{
+	cursor: pointer;
+}
+
+
+
+/*Juego del Pacman*/
+#game-container {
+  width: 500px; /* 20 * 20 (tamaño de cada celda) */
+  height: 475px;
+  border: 2px solid black;
+  background-color: red;
+  position: relative;
+}
+
+#row {
+  display: flex;
+  background-color: red;
+}
+
+.wall, .empty {
+  width: 35px;
+  height: 25px;
+}
+
+.wall {
+  background-color: blue;
+}
+
+.empty {
+  background-color: black;
+}
+
+#pacman {
+  width: 15px;
+  height: 15px;
+  background-color: gray;
+  border-radius: 50%;
+  position: absolute;
+  left: 200px; /* Posición inicial */
+  top: 200px; /* Posición inicial */
+}
+
+#cheese {
+  width: 15px;
+  height: 15px;
+  background-color: yellow;
+  border-radius: 50%;
+  position: absolute;
+  left: 240px; /* Posición inicial */
+  top: 240px; /* Posición inicial */
+}
+
+.monster {
+  width: 15px;
+  height: 15px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  left: 100px; /* Posición inicial */
+  top: 100px; /* Posición inicial */
+}
+/*Fin del Juego del Pacman*/
+
+/**/
+
+.cell {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ccc;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #0a66c2;
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+  line-height: 30px;
+  margin: 1px; /* Añadir margen entre las celdas */
+}
+
+.cell.revealed {
+  background-color: #fff;
+}
+
+.cell.revealed.exploded {
+  background-color: #ff0000;
+  color: #fff;
+}
+
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 330px; /* Ajustar el ancho máximo según el número de columnas */
+  margin: auto;
+}
+
 
 @media screen and (max-width:1024px) {
   body {
@@ -60,6 +327,8 @@
   .catalogos {
     margin-bottom: 30%;
     color:red;
+    font-size:20px;
+    
   }
   .imagenesConsolas {
     height: 750px;
@@ -382,7 +651,7 @@
   }
   .form-container {
     width: 100%;
-    height: 450px;
+    height: auto;
     background-color: #fff;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     border-radius: 10px;
@@ -553,96 +822,105 @@
     border-radius: 15px;
     transition: all 0.5s;
   }
-  .der {
-    display: flex;
-    height: auto;
-    width: 50%;
-    background-color: red;
-    justify-content: flex-end;
-  }
-  .izq {
-    font-family: "Protest Riot";
-    display: flex;
-    height: auto;
-    width: 50%;
-    background-color: red;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    color: white;
-  }
-  .carta {
-    display: flex;
-    height: 70px;
-    width: 350px;
-  }
-  .carta svg {
-    position: absolute;
-    display: flex;
-    width: 60%;
-    height: 100%;
-    font-size: 24px;
-    font-weight: 700;
-    opacity: 1;
-    transition: opacity 0.25s;
-    z-index: 2;
-    padding: 0.25rem;
-    cursor: pointer;
-  }
-  .carta .social-link1,.carta .social-link2,.carta .social-link3,.carta .social-link4,.carta .social-link5 {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 25%;
-    color: whitesmoke;
-    font-size: 24px;
-    text-decoration: none;
-    transition: 0.25s;
-    border-radius: 50px;
-  }
-  .carta svg {
-    transform: scale(1);
-  }
-  .carta .social-link1:hover {
-    background: #f09433;
-    background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
-    background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
-    animation: bounce_613 0.4s linear;
-  }
-  .carta .social-link2:hover {
-    background-color: #242c34;
-    animation: bounce_613 0.4s linear;
-  }
-  .carta .social-link3:hover {
-    background-color: #5865f2;
-    animation: bounce_613 0.4s linear;
-  }
-  .carta .social-link4:hover {
-    background-color: #0a66c2;
-    animation: bounce_613 0.4s linear;
-  }
-  .carta .social-link5:hover {
-    background-color: #ff8000;
-    animation: bounce_613 0.4s linear;
-  }
+  
+    .der {
+        height: auto;
+        width: 100%;
+        background-color: red;
+        text-align:center;
+        font-size:10px;
+        justify-content: flex-end;
+    }
+    .izq, .med {
+        font-family: "Protest Riot";
+        flex-direction: column;
+        justify-content: space-evenly;
+        color: white;
+        display: flex;
+        height: auto;
+        width: 50%;
+        background-color: red;
+        font-size: 10px;
+        align-items: center;
+    }
+    .izq h2 {
+        font-size:15px;
+    }
+    .izq h3 {
+        font-size:12px;
+    }
+    
+    .carta {
+        display: flex;
+        height: 70px;
+        width: 100%;
+    }
+    .carta svg {
+        display: flex;
+        width: 60%;
+        height: 100%;
+        font-size: 24px;
+        font-weight: 700;
+        opacity: 1;
+        transition: opacity 0.25s;
+        z-index: 2;
+        padding: 0.25rem;
+        cursor: pointer;
+     }
+    .carta .social-link1,.carta .social-link2,.carta .social-link3,.carta .social-link4,.carta .social-link5, .carta .email-link {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20%;
+        color: whitesmoke;
+        font-size: 24px;
+        text-decoration: none;
+        transition: 0.25s;
+        border-radius: 50px;
+    }
+    .carta svg {
+        transform: scale(1);
+    }
+    .carta .social-link1:hover {
+        background: #f09433;
+        background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+        background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+        animation: bounce_613 0.4s linear;
+    }
+    .carta .social-link2:hover {
+        background-color: #242c34;
+        animation: bounce_613 0.4s linear;
+    }
+    .carta .social-link3:hover {
+        background-color: #5865f2;
+        animation: bounce_613 0.4s linear;
+    }
+    .carta .social-link4:hover {
+        background-color: #0a66c2;
+        animation: bounce_613 0.4s linear;
+    }
+    .carta .social-link5:hover {
+        background-color: #ff8000;
+        animation: bounce_613 0.4s linear;
+    }
 
-  @keyframes bounce_613 {
-    40% {
-      transform: scale(1.4);
+    @keyframes bounce_613 {
+        40% {
+          transform: scale(1.4);
+        }
+        60% {
+          transform: scale(0.8);
+        }
+        80% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
     }
-    60% {
-      transform: scale(0.8);
-    }
-    80% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
   .CartBtn {
     width: 140px;
     height: 40px;
@@ -802,26 +1080,27 @@
   }
 
 
-  /*Prueba*/
-  .container-fluid {
-    padding: 5px;
-}
+    /*Prueba*/
+    .container-fluid {
+        padding: 5px;
+    }
 
-/* Ajustes para la barra de navegación */
-#psup {
-    text-align: center;
-}
+    /* Ajustes para la barra de navegación */
+    #psup {
+        text-align: center;
+    }
 
-#tablaSecciones {
-    display: block;
-    width: 100%;
-}
-
-.tdDatos {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-}
+    #tablaSecciones {
+        display: block;
+        width: 100%;
+        text-align:center;
+    }
+    
+    .tdDatos {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
 
 /* Estilos para los enlaces y selectores */
 /* Ajustes generales para pantallas pequeñas */
@@ -977,7 +1256,6 @@ select {
   }
   .snos1,.snos2 {
     font-family: "Honk";
-    color:green;
   }
   .snos1 {
     font-size: 66px;
@@ -1040,6 +1318,7 @@ select {
   .abajo {
     position: absolute;
     bottom: 0;
+    width:100%;
   }
   .cliente {
     bottom: 0;
@@ -1108,9 +1387,6 @@ select {
     height: 100%;
   }
 
-
-
-
   button {
     display: flex;
     align-items: center;
@@ -1166,7 +1442,6 @@ select {
   iframe {
     background-color: white;
     overflow: hidden;
-    height: 100%;
   }
 
   #chat-button {
@@ -1197,6 +1472,45 @@ select {
 }
 
 @media screen and (min-width: 1024px) {
+  ul {
+    list-style: none; /* Elimina los puntos de la lista */
+  }
+
+  ul li {
+    margin-bottom: 5px; /* Espaciado entre elementos de lista */
+  }
+
+  ul li span {
+    margin-right: 5px; /* Espacio entre el marcador y el texto */
+  }
+
+  ul li span {
+    font-size: 20px; /* Tamaño de fuente para el marcador */
+  }
+
+  ul li span { /* Estilos para la marca de verificación */
+    color: #2ecc71; /* Verde */
+  }
+
+  ul li span { /* Estilos para la cruz */
+    color: #e74c3c; /* Rojo */
+  }
+  .form {
+    position: relative; /* Asegurar que el contenedor padre tenga posición relativa */
+    margin-bottom: 50px; /* Ajustar el margen inferior para evitar solapamiento */
+  }
+  #password-strength-meter {
+    width: 100%;
+    height: 10px;
+    background-color: #ddd;
+    margin-bottom: 10px;
+  }
+
+  #password-strength-meter .strength {
+    height: 100%;
+    background-color: #3498db;
+  }
+  
   #chat {
     height: 360px;
   }
@@ -1312,6 +1626,7 @@ select {
   .catalogos {
     margin-bottom: 30%;
     color:red;
+    font-size:20px;
   }
   .imagenesConsolas {
     height: 750px;
@@ -1617,6 +1932,7 @@ select {
     color: #fff;
     font-size: 16px;
     transform: .3s ease;
+    margin-top:50%;
   }
   .submit:hover {
     background-color: rgb(56, 90, 194);
@@ -1634,7 +1950,7 @@ select {
   }
   .form-container {
     width: 100%;
-    height: 450px;
+    height: auto;
     background-color: #fff;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     border-radius: 10px;
@@ -1805,31 +2121,38 @@ select {
     border-radius: 15px;
     transition: all 0.5s;
   }
-  .der {
-    display: flex;
-    height: 100px;
-    width: 50%;
-    background-color: red;
-    justify-content: flex-end;
-  }
-  .izq {
-    font-family: "Protest Riot";
-    display: flex;
-    height: 100px;
-    width: 50%;
-    background-color: red;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    color: white;
-  }
+    .der, .izq {
+      display: flex;
+      height: auto;
+      width: 33%;
+      background-color: red;
+    }
+    .med {
+        height: auto;
+        width: 33%;
+        background-color: red;
+        text-align:center;
+    }
+    .der {
+      justify-content: flex-end;
+    }
+    
+    .izq {
+      font-family: "Protest Riot";
+      display: flex;
+      height: auto;
+      background-color: red;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      color: white;
+    }
+
   .carta {
     display: flex;
-    height: 70px;
     width: 350px;
   }
   .carta svg {
-    position: absolute;
     display: flex;
     width: 60%;
     height: 100%;
@@ -1841,7 +2164,7 @@ select {
     padding: 0.25rem;
     cursor: pointer;
   }
-  .carta .social-link1,.carta .social-link2,.carta .social-link3,.carta .social-link4,.carta .social-link5 {
+  .carta .social-link1,.carta .social-link2,.carta .social-link3,.carta .social-link4,.carta .social-link5, .carta .email-link{
     position: relative;
     display: flex;
     align-items: center;
@@ -2144,7 +2467,6 @@ select {
   }
   .snos1,.snos2 {
     font-family: "Honk";
-    color:green;
   }
   .snos1 {
     font-size: 66px;
@@ -2154,6 +2476,7 @@ select {
   }
   .descripcionEmpresa {
     font-family: "Exo 2";
+    font-size:17.5px;
   }
   footer {
     margin-top: 10%;
@@ -2208,6 +2531,7 @@ select {
   .abajo {
     position: absolute;
     bottom: 0;
+    width:100%;
   }
   .cliente {
     bottom: 0;
@@ -2275,10 +2599,6 @@ select {
     width: 100%;
     height: 100%;
   }
-
-
-
-
   button {
     display: flex;
     align-items: center;
@@ -2334,7 +2654,6 @@ select {
   iframe {
     background-color: white;
     overflow: hidden;
-    height: 100%;
   }
 
   #chat-button {

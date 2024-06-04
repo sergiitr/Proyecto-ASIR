@@ -1,19 +1,15 @@
 <?php
-    // Conexión a la base de datos (reemplaza con tus datos)
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "tienda_videojuegos";
+    require_once "./login.php";
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conexion = mysqli_connect($host, $user, $pass, $database);
 
     // Verificar la conexión
-    if ($conn->connect_error) 
-        die("Error de conexión: " . $conn->connect_error);
+    if ($conexion->connect_error) 
+        die("Error de conexión: " . $conexion->connect_error);
 
     // Consulta SQL para obtener los datos
     $sql = "SELECT DAYNAME(fecha) AS dia_semana, SUM(total) AS total_ventas FROM compran GROUP BY dia_semana";
-    $result = $conn->query($sql);
+    $result = $conexion->query($sql);
     // Crear un array para almacenar los datos
     $data = array();
     if ($result->num_rows > 0) {
@@ -24,5 +20,5 @@
     // Convertir el array a formato JSON
     echo json_encode($data);
     // Cerrar conexión
-    $conn->close();
+    $conexion->close();
 ?>

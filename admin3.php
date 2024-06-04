@@ -1,10 +1,4 @@
-<?php 
-    session_start();
-    if (!isset($_SESSION["usuario"]) || $_SESSION["administrador"] !== 1) {
-        header('Location: index.php');
-        exit;
-    }
-?>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -16,10 +10,17 @@
         <link rel="shortcut icon" href="./imagenes/logo.jpeg"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="script.js"></script>
     </head>
     <body>
-        <?php include 'header.php'; ?>        
-        <div class="ms-3">
+        <?php include 'header.php'; ?>
+        <?php 
+            if (!isset($_SESSION["usuario"]) || $_SESSION["administrador"] !== 1) {
+                header('Location: index.php');
+                exit;
+            }
+        ?>    
+        <div class="container mt-4">
             <h2>Formulario de Producto</h2>
             <form action="insertar_producto.php" method="POST" enctype="multipart/form-data">
                 <label for="nombre">Nombre:</label><br>
@@ -39,30 +40,25 @@
                 </select><br><br>
                 <label for="idcompania">Compañía:</label><br>
                 <select id="idcompania" name="idcompania">
-                <?php
-                    // Conexión a la base de datos
-                    require_once "login.php";
-                    $conexion = mysqli_connect($host, $user, $pass, $database);
-
-                    // Verificar la conexión
-                    if (mysqli_connect_error()) {
-                        die("Error de conexión: " . mysqli_connect_error());
-                    }
-
-                    // Consultar las compañías desde la base de datos
-                    $consulta_companias = "SELECT idCompania, nombreCompania FROM compania";
-                    $resultado_companias = mysqli_query($conexion, $consulta_companias);
-
-                    // Mostrar las opciones en el select
-                    while ($fila = mysqli_fetch_assoc($resultado_companias)) {
-                        echo "<option value='" . $fila['idCompania'] . "'>" . $fila['nombreCompania'] . "</option>";
-                    }
-
-                    // Cerrar la conexión
-                    mysqli_close($conexion);
-                ?>
-
-                </select><br><br>
+                    <?php
+                        // Conexión a la base de datos
+                        require_once "login.php";
+                        $conexion = mysqli_connect($host, $user, $pass, $database);
+                        // Verificar la conexión
+                        if (mysqli_connect_error())
+                            die("Error de conexión: " . mysqli_connect_error());
+                        // Consultar las compañías desde la base de datos
+                        $consulta_companias = "SELECT idCompania, nombreCompania FROM compania";
+                        $resultado_companias = mysqli_query($conexion, $consulta_companias);
+                        // Mostrar las opciones en el select
+                        while ($fila = mysqli_fetch_assoc($resultado_companias)) {
+                            echo "<option value='" . $fila['idCompania'] . "'>" . $fila['nombreCompania'] . "</option>";
+                        }
+                        // Cerrar la conexión
+                        mysqli_close($conexion);
+                    ?>
+                </select>
+                <br><br>
                 <label for="imagen">Subir Imagen:</label><br>
                 <label class="custum-file-upload" for="imagen">
                     <div class="icon">
